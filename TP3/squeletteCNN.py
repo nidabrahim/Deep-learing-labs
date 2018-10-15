@@ -41,7 +41,9 @@ Convolution 2D avec RELU
 -------------------------------------------------------------------------
 ''' 
 def conv2d(x, W, b, strides=1):
-    #TODO
+    x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding='SAME')
+    x = tf.nn.bias_add(x, b)
+    return tf.nn.relu(x);
 
 '''
 -------------------------------------------------------------------------
@@ -49,7 +51,7 @@ Pooling max
 -------------------------------------------------------------------------
 ''' 
 def maxpool2d(x, k=2):
-    #TODO
+    return tf.nn.max_pool(x, ksize=[1, k, k, 1], strides=[1, k, k, 1], padding='SAME')
 
 
 '''
@@ -62,8 +64,8 @@ def conv_net(x, poids, biais, dropout):
     # Mise en forme de l'image d'entrée
     x = tf.reshape(x, shape=[-1, 28, 28, 1])
 
-    conv1 = #TODO
-    conv2 = #TODO
+    conv1 = conv2d(x, W=poids['wconv1'], b=biais['bconv1'], strides=1)
+    conv2 = conv2d(x, W=poids['wconv2'], b=biais['bconv2'], strides=1)
 
     # Mise en forme des activations de la seconde couche cachée pour l'entrée de la couche complètement connectée
     fcl = tf.reshape(conv2, [-1, poids['wfcl'].get_shape().as_list()[0]])
@@ -88,6 +90,18 @@ TODO : initialiser avec une loi normale des variables tensorFlow :
     - wfcl et bfcl pour la couche complètement connectée : wfcl est un banc de filtres 7*7*64 à 1024 sorties. bfcl a une taille adaptée
     - out (poids et biais) ont une taille adaptée pour la classification des données MNIST
 '''
+poids = {
+    'wconv1': tf.Variable(tf.random_normal([5, 5, 1, 32])),
+    'wconv2': tf.Variable(tf.random_normal([5, 5, 32, 64])),
+    'wfcl': tf.Variable(tf.random_normal([7*7*64, 1046])),
+    'out': tf.Variable(tf.random_normal([num_hidden_2, num_classes]))
+}
+biais = {
+    'bconv1': tf.Variable(tf.random_normal([num_hidden_1])),
+    'bconv2': tf.Variable(tf.random_normal([num_hidden_1])),
+    'bfcl': tf.Variable(tf.random_normal([num_hidden_2])),
+    'out': tf.Variable(tf.random_normal([num_classes]))
+}
 
 
 
