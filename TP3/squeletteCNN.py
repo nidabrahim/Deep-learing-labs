@@ -73,10 +73,10 @@ def conv_net(x, poids, biais, dropout):
     fcl = tf.nn.relu(fcl)
     
     # Dropout 
-    fcl = #TODO
+    fcl = maxpool2d(fcl, k=2)
 
     # Couche de sortie
-    out = #TODO
+    out = tf.add(tf.matmul(fcl, poids['out']), biais['out'])
 
     return out
 
@@ -93,7 +93,7 @@ TODO : initialiser avec une loi normale des variables tensorFlow :
 poids = {
     'wconv1': tf.Variable(tf.random_normal([5, 5, 1, 32])),
     'wconv2': tf.Variable(tf.random_normal([5, 5, 32, 64])),
-    'wfcl': tf.Variable(tf.random_normal([7*7*64, 1046])),
+    'wfcl': tf.Variable(tf.random_normal([7*7*64, 1024])),
     'out': tf.Variable(tf.random_normal([num_hidden_2, num_classes]))
 }
 biais = {
@@ -111,6 +111,8 @@ pred = conv_net(x, poids, biais, keep_prob)
 
 # Fonction de perte et procédure d'optimisation
 #TODO : entropie croisée avec logits, algorithme d'optimisation ADAM
+cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=pred)
+loss_operation = tf.reduce_mean(cross_entropy)
 
 
 # Evaluation du modèle
